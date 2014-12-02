@@ -1,0 +1,16 @@
+[
+{
+  "modid": "HardcoreDarkness",
+  "name": "Hardcore Darkness",
+  "description": "Removes the minimum light that's always present in minecraft.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["lumien"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
