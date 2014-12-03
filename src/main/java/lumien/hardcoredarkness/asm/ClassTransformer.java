@@ -1,26 +1,29 @@
 package lumien.hardcoredarkness.asm;
 
+import static org.objectweb.asm.Opcodes.FADD;
+import static org.objectweb.asm.Opcodes.FLOAD;
+import static org.objectweb.asm.Opcodes.FMUL;
+import static org.objectweb.asm.Opcodes.FSTORE;
+
 import java.io.File;
 import java.util.Iterator;
+
+import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraftforge.common.config.Configuration;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
-
-import static org.objectweb.asm.Opcodes.*;
-
-import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraftforge.common.config.Configuration;
 
 public class ClassTransformer implements IClassTransformer
 {
@@ -83,11 +86,11 @@ public class ClassTransformer implements IClassTransformer
 				AbstractInsnNode an = getSunBrightnessBody.instructions.get(i);
 				if (an instanceof LdcInsnNode)
 				{
-					logger.log(Level.INFO, " - Patched minimal sky light");
 					LdcInsnNode lin = (LdcInsnNode) an;
 
 					if (lin.cst.equals(new Float("0.8")))
 					{
+						logger.log(Level.INFO, " - Patched minimal sky light");
 						removeIndex = i;
 					}
 				}
@@ -141,6 +144,7 @@ public class ClassTransformer implements IClassTransformer
 			boolean insertedHook = false;
 			Iterator<AbstractInsnNode> iterator = updateLightmap.instructions.iterator();
 
+			boolean potion = false;
 			for (int i = 0; i < updateLightmap.instructions.size(); i++)
 			{
 				AbstractInsnNode an = updateLightmap.instructions.get(i);
@@ -148,13 +152,52 @@ public class ClassTransformer implements IClassTransformer
 				{
 					LdcInsnNode lin = (LdcInsnNode) an;
 
-					if (lin.cst.equals(m0) || lin.cst.equals(m1) || lin.cst.equals(m3))
+					if (!potion)
 					{
-						lin.cst = new Float("1.0");
+						if (lin.cst.equals(m0) || lin.cst.equals(m1) || lin.cst.equals(m3))
+						{
+							lin.cst = new Float("1.0");
+						}
+						else if (lin.cst.equals(a0) || lin.cst.equals(a1) || lin.cst.equals(a3))
+						{
+							lin.cst = new Float("0.0");
+						}
 					}
-					else if (lin.cst.equals(a0) || lin.cst.equals(a1) || lin.cst.equals(a3))
+				}
+				else if (an instanceof MethodInsnNode)
+				{
+					MethodInsnNode min = (MethodInsnNode) an;
+					if (min.name.equals(MCPNames.method("func_70644_a")))
 					{
-						lin.cst = new Float("0.0");
+						float mod1 = 0.9f;
+						float mod2 = 1f-mod1;
+						
+						logger.log(Level.INFO, " - Patched Nightvision Potion");
+						AbstractInsnNode insertAfter = updateLightmap.instructions.get(i + 1);
+						InsnList instructions = new InsnList();
+						instructions.add(new VarInsnNode(FLOAD, 11));
+						instructions.add(new LdcInsnNode(mod1));
+						instructions.add(new InsnNode(FMUL));
+						instructions.add(new LdcInsnNode(mod2));
+						instructions.add(new InsnNode(FADD));
+						instructions.add(new VarInsnNode(FSTORE, 11));
+
+						instructions.add(new VarInsnNode(FLOAD, 12));
+						instructions.add(new LdcInsnNode(mod1));
+						instructions.add(new InsnNode(FMUL));
+						instructions.add(new LdcInsnNode(mod2));
+						instructions.add(new InsnNode(FADD));
+						instructions.add(new VarInsnNode(FSTORE, 12));
+
+						instructions.add(new VarInsnNode(FLOAD, 13));
+						instructions.add(new LdcInsnNode(mod1));
+						instructions.add(new InsnNode(FMUL));
+						instructions.add(new LdcInsnNode(mod2));
+						instructions.add(new InsnNode(FADD));
+						instructions.add(new VarInsnNode(FSTORE, 13));
+
+						updateLightmap.instructions.insert(insertAfter, instructions);
+						i+=18;
 					}
 				}
 			}
