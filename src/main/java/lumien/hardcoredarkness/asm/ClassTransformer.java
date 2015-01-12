@@ -18,8 +18,10 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -169,35 +171,37 @@ public class ClassTransformer implements IClassTransformer
 					MethodInsnNode min = (MethodInsnNode) an;
 					if (min.name.equals(MCPNames.method("func_70644_a")))
 					{
-						float mod1 = 0.9f;
-						float mod2 = 1f-mod1;
-						
-						logger.log(Level.INFO, " - Patched Nightvision Potion");
-						AbstractInsnNode insertAfter = updateLightmap.instructions.get(i + 1);
-						InsnList instructions = new InsnList();
-						instructions.add(new VarInsnNode(FLOAD, 11));
-						instructions.add(new LdcInsnNode(mod1));
-						instructions.add(new InsnNode(FMUL));
-						instructions.add(new LdcInsnNode(mod2));
-						instructions.add(new InsnNode(FADD));
-						instructions.add(new VarInsnNode(FSTORE, 11));
+						if (updateLightmap.instructions.get(i + 1) instanceof JumpInsnNode)
+						{
+							float mod1 = 0.9f;
+							float mod2 = 1f - mod1;
+							logger.log(Level.INFO, " - Patched Nightvision Potion");
+							AbstractInsnNode insertAfter = updateLightmap.instructions.get(i + 1);
+							InsnList instructions = new InsnList();
+							instructions.add(new VarInsnNode(FLOAD, 11));
+							instructions.add(new LdcInsnNode(mod1));
+							instructions.add(new InsnNode(FMUL));
+							instructions.add(new LdcInsnNode(mod2));
+							instructions.add(new InsnNode(FADD));
+							instructions.add(new VarInsnNode(FSTORE, 11));
 
-						instructions.add(new VarInsnNode(FLOAD, 12));
-						instructions.add(new LdcInsnNode(mod1));
-						instructions.add(new InsnNode(FMUL));
-						instructions.add(new LdcInsnNode(mod2));
-						instructions.add(new InsnNode(FADD));
-						instructions.add(new VarInsnNode(FSTORE, 12));
+							instructions.add(new VarInsnNode(FLOAD, 12));
+							instructions.add(new LdcInsnNode(mod1));
+							instructions.add(new InsnNode(FMUL));
+							instructions.add(new LdcInsnNode(mod2));
+							instructions.add(new InsnNode(FADD));
+							instructions.add(new VarInsnNode(FSTORE, 12));
 
-						instructions.add(new VarInsnNode(FLOAD, 13));
-						instructions.add(new LdcInsnNode(mod1));
-						instructions.add(new InsnNode(FMUL));
-						instructions.add(new LdcInsnNode(mod2));
-						instructions.add(new InsnNode(FADD));
-						instructions.add(new VarInsnNode(FSTORE, 13));
+							instructions.add(new VarInsnNode(FLOAD, 13));
+							instructions.add(new LdcInsnNode(mod1));
+							instructions.add(new InsnNode(FMUL));
+							instructions.add(new LdcInsnNode(mod2));
+							instructions.add(new InsnNode(FADD));
+							instructions.add(new VarInsnNode(FSTORE, 13));
 
-						updateLightmap.instructions.insert(insertAfter, instructions);
-						i+=18;
+							updateLightmap.instructions.insert(insertAfter, instructions);
+							i += 18;
+						}
 					}
 				}
 			}
