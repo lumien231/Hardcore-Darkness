@@ -62,7 +62,7 @@ public class AsmHandler
 				return 0.8F;
 			case 2:
 				float value;
-				float moon = Minecraft.getMinecraft().theWorld.getCurrentMoonPhaseFactorBody();
+				float moon = Minecraft.getMinecraft().theWorld.getCurrentMoonPhaseFactor();
 				int phase = (int) (moon * 10);
 
 				value = maxBright + (10 - phase) * step;

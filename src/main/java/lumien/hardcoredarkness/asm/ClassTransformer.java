@@ -248,7 +248,7 @@ public class ClassTransformer implements IClassTransformer
 							i += 18;
 						}
 					}
-					else if (min.name.equals(MCPNames.method("func_177502_q")))
+					else if (min.name.equals(MCPNames.method("func_186068_a")))
 					{
 						logger.log(Level.DEBUG, " - Patched End Light Removal");
 						InsnList toInsert = new InsnList();
