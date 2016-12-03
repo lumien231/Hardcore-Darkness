@@ -1,6 +1,6 @@
 [
 {
-  "modid": "HardcoreDarkness",
+  "modid": "hardcoredarkness",
   "name": "Hardcore Darkness",
   "description": "Removes the minimum light that's always present in minecraft.",
   "version": "${version}",
