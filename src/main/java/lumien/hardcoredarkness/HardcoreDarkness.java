@@ -75,7 +75,7 @@ public class HardcoreDarkness
 	{
 		if (event.phase == Phase.END)
 		{
-			EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+			EntityPlayerSP player = Minecraft.getMinecraft().player;
 
 			if (player != null)
 			{

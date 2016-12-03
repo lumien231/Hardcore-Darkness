@@ -5,6 +5,7 @@ import java.awt.Color;
 import lumien.hardcoredarkness.HardcoreDarkness;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.init.MobEffects;
 
 public class AsmHandler
 {
@@ -62,7 +63,7 @@ public class AsmHandler
 				return 0.8F;
 			case 2:
 				float value;
-				float moon = Minecraft.getMinecraft().theWorld.getCurrentMoonPhaseFactor();
+				float moon = Minecraft.getMinecraft().world.getCurrentMoonPhaseFactor();
 				int phase = (int) (moon * 10);
 
 				value = maxBright + (10 - phase) * step;
@@ -167,7 +168,7 @@ public class AsmHandler
 		}
 
 		colorModeCache = HardcoreDarkness.INSTANCE.getActiveConfig().getMode();
-		if (colorModeCache > 0 && HardcoreDarkness.INSTANCE.getActiveConfig().removeBlue())
+		if (colorModeCache > 0 && HardcoreDarkness.INSTANCE.getActiveConfig().removeBlue() || (Minecraft.getMinecraft().player.isPotionActive(MobEffects.NIGHT_VISION) && colorModeCache == 0))
 		{
 			for (int i = 0; i < original.length; i++)
 			{
@@ -183,6 +184,7 @@ public class AsmHandler
 				}
 			}
 		}
+
 		return original;
 	}
 
@@ -197,7 +199,7 @@ public class AsmHandler
 			return f;
 		}
 	}
-	
+
 	public static float down(float f)
 	{
 		if (enabled())
@@ -208,6 +210,11 @@ public class AsmHandler
 		{
 			return f;
 		}
+	}
+
+	public static float[] nightVisionMod(float originalRed, float originalGreen, float originalBlue)
+	{
+		return new float[] { originalRed, originalGreen, originalBlue };
 	}
 
 	public static boolean enabled()
