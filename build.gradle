@@ -29,7 +29,7 @@ jar {
 }
 
 minecraft {
-    version = "1.11-13.19.0.2160"
+    version = "1.11.2-13.20.0.2261"
     runDir = "eclipse"
     
     replaceIn "HardcoreDarkness.java"
