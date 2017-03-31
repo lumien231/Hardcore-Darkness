@@ -40,10 +40,6 @@ public class AsmHandler
 	}
 
 	static float value2 = 0;
-
-	static float maxBright = 0.7F;
-	static float step = (1F - maxBright) / 10F;
-
 	static int skyModeCache;
 
 	public static float sky1()
@@ -62,11 +58,10 @@ public class AsmHandler
 			case 1:
 				return 0.8F;
 			case 2:
-				float value;
+				float[] lightList = HardcoreDarkness.INSTANCE.getActiveConfig().getMoonLightList();
 				float moon = Minecraft.getMinecraft().world.getCurrentMoonPhaseFactor();
-				int phase = (int) (moon * 10);
+				float value = lightList[(int) Math.round(moon / 0.25)];
 
-				value = maxBright + (10 - phase) * step;
 				value2 = 1 - value;
 				return value;
 			default:

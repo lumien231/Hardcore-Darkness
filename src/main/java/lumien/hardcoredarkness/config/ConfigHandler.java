@@ -23,6 +23,20 @@ public class ConfigHandler
 		localConfig.setDarkEnd(config.getBoolean("Dark End", "Settings", false, "Whether the End is also supposed to have its minimum light removed"));
 		localConfig.setAlternativeNightSkylight(config.getBoolean("AlternativeNightSkyLight", "Settings", false, "Switches the slightly bluish NightSkyLight in mode 1 & 2 with a more greenish version."));
 
+		double[] moonLightList = config.get("Settings", "MoonLightList", new double[] { 0, 0.075, 0.15, 0.225, 0.3 }, "In mode 2 this list defines how much skylight there is when 0%/25%/50%/75%/100% of the moon is visible. (Values go from 0 (Total Darkness) to 1 (Total Brightness)).").getDoubleList();
+
+		if (moonLightList.length == 5)
+		{
+			float[] floatList = new float[5];
+
+			for (int i = 0; i < moonLightList.length; i++)
+			{
+				floatList[i] = 1F - (float) moonLightList[i];
+			}
+
+			localConfig.setMoonLightList(floatList);
+		}
+
 		String blackListString = config.getString("Dimension Blacklist", "Settings", "", "A list of dimension ids in which Hardcore Darkness will be completely disabled\nExample: S:\"Dimension Blacklist\"=-1,1");
 
 		if (!blackListString.isEmpty())
