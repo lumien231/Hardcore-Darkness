@@ -35,6 +35,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -77,15 +78,18 @@ public class HardcoreDarkness
 	{
 		configHandler.setServerConfig(null);
 	}
+	
+	@SubscribeEvent
+	public void playerLogout(ClientDisconnectionFromServerEvent event)
+	{
+		configHandler.setServerConfig(null);
+	}
 
 	@SubscribeEvent
 	public void playerLoginServer(PlayerLoggedInEvent event)
 	{
 		PacketHandler.INSTANCE.sendTo(new MessageConfig(configHandler.getActiveConfig()), (EntityPlayerMP) event.player);
 	}
-
-	@SideOnly(Side.CLIENT)
-	WeakReference<GuiScreen> fixedGUI = new WeakReference<GuiScreen>(null);
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
@@ -110,11 +114,11 @@ public class HardcoreDarkness
 			{
 				GuiScreen openGUI = Minecraft.getMinecraft().currentScreen;
 
-				if (openGUI instanceof GuiVideoSettings && openGUI != fixedGUI.get())
+				if (openGUI instanceof GuiVideoSettings && openGUI != ProxyHelper.fixedGUI.get())
 				{
 					GuiOptionsRowList rowList = (GuiOptionsRowList) ((GuiVideoSettings) openGUI).optionsRowList;
 
-					fixedGUI = new WeakReference<GuiScreen>(openGUI);
+					ProxyHelper.fixedGUI = new WeakReference<GuiScreen>(openGUI);
 					
 					for (GuiOptionsRowList.Row row : rowList.options)
 					{
