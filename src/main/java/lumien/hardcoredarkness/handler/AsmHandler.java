@@ -216,4 +216,18 @@ public class AsmHandler
 	{
 		return HardcoreDarkness.INSTANCE.enabled;
 	}
+
+	public static float overrideGamma(float original)
+	{
+		float override = HardcoreDarkness.INSTANCE.getActiveConfig().getGammaOverride();
+
+		if (override != -1)
+		{
+			return override;
+		}
+		else
+		{
+			return original;
+		}
+	}
 }

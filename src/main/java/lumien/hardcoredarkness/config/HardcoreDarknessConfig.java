@@ -18,6 +18,8 @@ public class HardcoreDarknessConfig
 	HashSet<Integer> dimensionBlacklist;
 
 	float[] moonLightList = new float[5];
+	
+	float gammaOverride = -1;
 
 	public HardcoreDarknessConfig()
 	{
@@ -88,7 +90,7 @@ public class HardcoreDarknessConfig
 	@Override
 	public String toString()
 	{
-		return "HardcoreDarknessConfig [mode=" + mode + ", darkNether=" + darkNether + ", darkEnd=" + darkEnd + ", alternativeNightSkylight=" + alternativeNightSkylight + ", dimensionBlacklist=" + dimensionBlacklist + ", moonLightList=" + Arrays.toString(moonLightList) + "]";
+		return "HardcoreDarknessConfig [mode=" + mode + ", darkNether=" + darkNether + ", darkEnd=" + darkEnd + ", alternativeNightSkylight=" + alternativeNightSkylight + ", dimensionBlacklist=" + dimensionBlacklist + ", moonLightList=" + Arrays.toString(moonLightList) + ", gammaOverride=" + gammaOverride + "]";
 	}
 
 	public float[] getMoonLightList()
@@ -99,5 +101,15 @@ public class HardcoreDarknessConfig
 	public void setMoonLightList(float[] newList)
 	{
 		this.moonLightList = newList;
+	}
+	
+	public float getGammaOverride()
+	{
+		return gammaOverride;
+	}
+	
+	public void setGammaOverride(float gammaOverride)
+	{
+		this.gammaOverride = gammaOverride;
 	}
 }

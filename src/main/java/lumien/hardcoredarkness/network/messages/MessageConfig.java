@@ -45,7 +45,8 @@ public class MessageConfig implements IMessage, IMessageHandler<MessageConfig, I
 		config.setDarkNether(buf.readBoolean());
 		config.setDarkEnd(buf.readBoolean());
 		config.setAlternativeNightSkylight(buf.readBoolean());
-
+		config.setGammaOverride(buf.readFloat());
+		
 		float[] moonLightList = new float[5];
 		for (int i = 0; i < 5; i++)
 		{
@@ -69,6 +70,7 @@ public class MessageConfig implements IMessage, IMessageHandler<MessageConfig, I
 		buf.writeBoolean(config.darkNether());
 		buf.writeBoolean(config.darkEnd());
 		buf.writeBoolean(config.removeBlue());
+		buf.writeFloat(config.getGammaOverride());
 
 		float[] moonLightList = config.getMoonLightList();
 		for (int i = 0; i < 5; i++)

@@ -189,7 +189,6 @@ public class ClassTransformer implements IClassTransformer
 		{
 			logger.log(Level.DEBUG, " - Patched updateLightmap");
 			boolean insertedHook = false;
-			Iterator<AbstractInsnNode> iterator = updateLightmap.instructions.iterator();
 
 			boolean potion = false;
 			for (int i = 0; i < updateLightmap.instructions.size(); i++)
@@ -203,11 +202,11 @@ public class ClassTransformer implements IClassTransformer
 					{
 						if (lin.cst.equals(m0) || lin.cst.equals(m3))
 						{
-							updateLightmap.instructions.insert(lin, new MethodInsnNode(Opcodes.INVOKESTATIC,"lumien/hardcoredarkness/handler/AsmHandler","up","(F)F",false));
+							updateLightmap.instructions.insert(lin, new MethodInsnNode(Opcodes.INVOKESTATIC, "lumien/hardcoredarkness/handler/AsmHandler", "up", "(F)F", false));
 						}
 						else if (lin.cst.equals(a0) || lin.cst.equals(a3))
 						{
-							updateLightmap.instructions.insert(lin, new MethodInsnNode(Opcodes.INVOKESTATIC,"lumien/hardcoredarkness/handler/AsmHandler","down","(F)F",false));
+							updateLightmap.instructions.insert(lin, new MethodInsnNode(Opcodes.INVOKESTATIC, "lumien/hardcoredarkness/handler/AsmHandler", "down", "(F)F", false));
 						}
 					}
 				}
@@ -259,7 +258,7 @@ public class ClassTransformer implements IClassTransformer
 						toInsert.add(new InsnNode(Opcodes.POP));
 						toInsert.add(new InsnNode(Opcodes.ICONST_0));
 						toInsert.add(l0);
-							
+
 						updateLightmap.instructions.insert(updateLightmap.instructions.get(i), toInsert);
 					}
 					else if (min.name.equals(MCPNames.method("func_110564_a")))
@@ -275,6 +274,15 @@ public class ClassTransformer implements IClassTransformer
 
 						updateLightmap.instructions.insertBefore(min, toInsert);
 						i += 5;
+					}
+				}
+				else if (an instanceof FieldInsnNode)
+				{
+					FieldInsnNode fin = (FieldInsnNode) an;
+
+					if (fin.name.equals(MCPNames.field("field_74333_Y")))
+					{
+						updateLightmap.instructions.insert(fin, new MethodInsnNode(Opcodes.INVOKESTATIC, "lumien/hardcoredarkness/handler/AsmHandler", "overrideGamma", "(F)F", false));
 					}
 				}
 			}

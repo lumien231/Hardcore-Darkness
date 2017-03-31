@@ -22,7 +22,8 @@ public class ConfigHandler
 		localConfig.setDarkNether(config.getBoolean("Dark Nether", "Settings", true, "Whether the Nether is also supposed to have its minimum light removed"));
 		localConfig.setDarkEnd(config.getBoolean("Dark End", "Settings", false, "Whether the End is also supposed to have its minimum light removed"));
 		localConfig.setAlternativeNightSkylight(config.getBoolean("AlternativeNightSkyLight", "Settings", false, "Switches the slightly bluish NightSkyLight in mode 1 & 2 with a more greenish version."));
-
+		localConfig.setGammaOverride(config.getFloat("GammaOverride", "Settings", -1.0F, -1.0F, 1.0F, "Setting this to something other than -1 will lock the gamma config settings to that value. (0.0 - 1.0)"));
+		
 		double[] moonLightList = config.get("Settings", "MoonLightList", new double[] { 0, 0.075, 0.15, 0.225, 0.3 }, "In mode 2 this list defines how much skylight there is when 0%/25%/50%/75%/100% of the moon is visible. (Values go from 0 (Total Darkness) to 1 (Total Brightness)).").getDoubleList();
 
 		if (moonLightList.length == 5)
