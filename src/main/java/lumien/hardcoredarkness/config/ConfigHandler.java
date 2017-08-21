@@ -1,5 +1,7 @@
 package lumien.hardcoredarkness.config;
 
+import java.io.File;
+
 import org.apache.logging.log4j.Level;
 
 import lumien.hardcoredarkness.HardcoreDarkness;
@@ -10,12 +12,20 @@ public class ConfigHandler
 {
 	HardcoreDarknessConfig localConfig;
 	HardcoreDarknessConfig serverConfig;
+	
+	File configFile;
 
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		configFile = event.getSuggestedConfigurationFile();
+		reloadConfig();
+	}
+	
+	public void reloadConfig()
+	{
 		localConfig = new HardcoreDarknessConfig();
 
-		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+		Configuration config = new Configuration(configFile);
 		config.load();
 
 		localConfig.setMode(config.get("Settings", "Mode", 0, "0: No minimum sky & block light, 1: No minimum block light, 2: Skylight is dependent on moon phase").getInt(0));
