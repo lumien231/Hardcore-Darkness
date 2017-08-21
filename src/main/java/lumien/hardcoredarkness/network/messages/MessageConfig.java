@@ -7,9 +7,15 @@ import org.apache.logging.log4j.Level;
 import io.netty.buffer.ByteBuf;
 import lumien.hardcoredarkness.HardcoreDarkness;
 import lumien.hardcoredarkness.config.HardcoreDarknessConfig;
+import lumien.hardcoredarkness.handler.ReflectionHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MessageConfig implements IMessage, IMessageHandler<MessageConfig, IMessage>
 {
@@ -26,13 +32,24 @@ public class MessageConfig implements IMessage, IMessageHandler<MessageConfig, I
 	}
 
 	@Override
-	public IMessage onMessage(MessageConfig message, MessageContext ctx)
+	@SideOnly(Side.CLIENT)
+	public IMessage onMessage(final MessageConfig message, MessageContext ctx)
 	{
-		HardcoreDarknessConfig config = message.config;
+		Minecraft.getMinecraft().addScheduledTask(new Runnable()
+		{
+			@Override
+			public void run()
+			{				
+				HardcoreDarknessConfig config = message.config;
 
-		HardcoreDarkness.INSTANCE.logger.log(Level.DEBUG, "Received Hardcore Darkness Config from Server: " + config.toString());
+				HardcoreDarkness.INSTANCE.logger.log(Level.DEBUG, "Received Hardcore Darkness Config from Server: " + config.toString());
 
-		HardcoreDarkness.INSTANCE.setServerConfig(config);
+				HardcoreDarkness.INSTANCE.setServerConfig(config);
+
+				HardcoreDarkness.INSTANCE.scheduleLightingRefresh();
+			}
+		});
+
 		return null;
 	}
 
@@ -46,7 +63,7 @@ public class MessageConfig implements IMessage, IMessageHandler<MessageConfig, I
 		config.setDarkEnd(buf.readBoolean());
 		config.setAlternativeNightSkylight(buf.readBoolean());
 		config.setGammaOverride(buf.readFloat());
-		
+
 		float[] moonLightList = new float[5];
 		for (int i = 0; i < 5; i++)
 		{
@@ -54,7 +71,7 @@ public class MessageConfig implements IMessage, IMessageHandler<MessageConfig, I
 		}
 
 		config.setMoonLightList(moonLightList);
-		
+
 		int blackListSize = buf.readInt();
 
 		for (int i = 0; i < blackListSize; i++)

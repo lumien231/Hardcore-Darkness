@@ -3,12 +3,16 @@ package lumien.hardcoredarkness;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import org.apache.logging.log4j.Logger;
+
+import com.google.common.util.concurrent.ListenableFutureTask;
 
 import lumien.hardcoredarkness.asm.MCPNames;
 import lumien.hardcoredarkness.config.ConfigHandler;
 import lumien.hardcoredarkness.config.HardcoreDarknessConfig;
+import lumien.hardcoredarkness.handler.ReflectionHandler;
 import lumien.hardcoredarkness.network.PacketHandler;
 import lumien.hardcoredarkness.network.messages.MessageConfig;
 import net.minecraft.client.Minecraft;
@@ -86,11 +90,18 @@ public class HardcoreDarkness
 	}
 
 	@SubscribeEvent
-	public void playerLoginServer(PlayerLoggedInEvent event)
+	public void playerLoginServer(final PlayerLoggedInEvent event)
 	{
 		PacketHandler.INSTANCE.sendTo(new MessageConfig(configHandler.getActiveConfig()), (EntityPlayerMP) event.player);
 	}
+	
+	public void scheduleLightingRefresh()
+	{
+		lightingRefreshScheduled = true;
+	}
 
+	boolean lightingRefreshScheduled = false;
+	
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void clientTick(TickEvent.ClientTickEvent event)
@@ -107,6 +118,13 @@ public class HardcoreDarkness
 			{
 				enabled = false;
 			}
+			
+			if (lightingRefreshScheduled && player != null && player.world != null && player.world.provider != null)
+			{
+				lightingRefreshScheduled = false;
+				ReflectionHandler.refreshLighting(player.world.provider);
+			}
+			
 
 			float gammaOverride = getActiveConfig().getGammaOverride();
 
